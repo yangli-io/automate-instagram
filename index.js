@@ -38,6 +38,7 @@ function startTask(){
 	function openModalAndClick(element, cb){
 		element.click();
 	   	driver.wait(until.elementLocated(By.className('-cx-PRIVATE-LikeButton__root')), 15000);
+	   	if (Math.random() > 0.5) driver.findElement(By.className('-cx-PRIVATE-FollowButton__buttonEnabled')).click();
 	   	driver.findElement(By.className('-cx-PRIVATE-LikeButton__root')).click().then(function(){
 	   		setTimeout(function(){
 	   			driver.findElement(By.className('-cx-PRIVATE-Modal__closeButton')).click().then(function(){
@@ -50,7 +51,7 @@ function startTask(){
 
 	//We have this because instagram has a limt of likes per hour and/or to mitigate the chance of being banned
 	function randomTime(){
-		return (Math.random() + 0.5) * 7000;
+		return (Math.random() + 0.5) * 6000;
 	}
 
 	var tagNum = 0;
