@@ -69,5 +69,8 @@ function startTask(){
 try{
 	startTask();
 } catch (err) {
+	console.log('--error happened--');
+	console.log(err);
+	console.log('restarting');
 	setTimeout(startTask, 5000)
 }
