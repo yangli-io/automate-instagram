@@ -1,6 +1,12 @@
 # automate-instagram
 automate likes and follows on instagram
 
+clone the project
+
+```
+git clone https://github.com/yangli1990/automate-instagram.git && cd automate-instagram
+```
+
 make sure you edit your config file
 
 1. for your username/password
