@@ -1,20 +1,27 @@
-function startTask(){
+function startTask(config){
 	var webdriver = require('selenium-webdriver'),
     By = require('selenium-webdriver').By,
     until = require('selenium-webdriver').until;
 
-	var login = require('./config');
+	var login = config;
 
 	var driver = new webdriver.Builder()
-	    .forBrowser('firefox')
+	    .forBrowser(login.driver)
 	    .build();
+	driver.manage().window().setSize(1920,1080)
+	driver.get('https://instagram.com/explore/tags/sydneyfoodies/');
+	driver.wait(until.elementLocated(By.className('-cx-PRIVATE-Navigation__menuLink')), 15000);
+	driver.findElement(By.css('.-cx-PRIVATE-Navigation__menuLink[href="/accounts/login/"]')).click().then(function(){
+		driver.wait(until.elementLocated(By.name('username')), 15000);
+		driver.findElement(By.name('username')).sendKeys(login.user);
+		driver.findElement(By.name('password')).sendKeys(login.pass);
+		driver.findElement(By.className('-cx-PRIVATE-SlimLoginForm__button')).click();
+		driver.wait(until.elementLocated(By.className('-cx-PRIVATE-SearchBox__inactiveSearchCaption')), 15000);
 
-	driver.get('https://instagram.com/accounts/login/');
-	driver.wait(until.elementLocated(By.name('username')), 15000);
-	driver.findElement(By.name('username')).sendKeys(login.user);
-	driver.findElement(By.name('password')).sendKeys(login.pass);
-	driver.findElement(By.className('-cx-PRIVATE-LoginForm__loginButton')).click();
-	driver.wait(until.elementLocated(By.className('-cx-PRIVATE-SearchBox__inactiveSearchCaption')), 15000);
+		openTag(getTag());
+
+	});
+	
 
 	function openTag(tag){
 		driver.get('https://instagram.com/explore/tags/' + tag + '/');
@@ -38,10 +45,12 @@ function startTask(){
 	function openModalAndClick(element, cb){
 		element.click();
 	   	driver.wait(until.elementLocated(By.className('-cx-PRIVATE-LikeButton__root')), 15000);
-	   	if (Math.random() > 0.5) driver.findElement(By.className('-cx-PRIVATE-FollowButton__buttonEnabled')).click();
+//   	if (Math.random() > 0.5) driver.findElement(By.className('-cx-PRIVATE-FollowButton__buttonEnabled')).click();
+		
 	   	driver.findElement(By.className('-cx-PRIVATE-LikeButton__root')).click().then(function(){
 	   		setTimeout(function(){
 	   			driver.findElement(By.className('-cx-PRIVATE-Modal__closeButton')).click().then(function(){
+			   		console.log('liked something' + login.driver);
 			   		setTimeout(cb, randomTime());
 			   	});
 	   		}, Math.random() * randomTime())
@@ -64,14 +73,17 @@ function startTask(){
 		return login.tags[tagNum];
 	}
 
-	openTag(getTag());
+	
 }
 
 try{
-	startTask();
+	var configs = require('./config');
+	configs.forEach(function(config){
+		startTask(config)
+	});
 } catch (err) {
 	console.log('--error happened--');
 	console.log(err);
 	console.log('restarting');
-	setTimeout(startTask, 5000)
+	setTimeout(startTask, 5000);
 }
