@@ -1,5 +1,8 @@
-{
-	"user": "",
-	"pass": "",
-	"tags": ["food", "foodie", "hungry", "yummy","eat"]
-}
+[
+	{
+		"user": "",
+		"pass": "",
+		"tags": ["food", "sydneyfoodies", "sydneyeats", "dinnertime","eat"],
+		"driver": "firefox"
+	}
+]
