@@ -23,3 +23,7 @@ npm run stop
 ```
 
 use at your own peril
+
+###Note
+There is a limit of how many things you can like per hour (like 25/hr). So this bot will wait abit after liking something.
+Use firefox.
