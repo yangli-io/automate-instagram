@@ -1,3 +1,5 @@
+var counter = 0;
+
 function startTask(config, classNames){
 	var webdriver = require('selenium-webdriver'),
     By = require('selenium-webdriver').By,
@@ -16,46 +18,49 @@ function startTask(config, classNames){
 		driver.findElement(By.name('username')).sendKeys(login.user);
 		driver.findElement(By.name('password')).sendKeys(login.pass);
 		driver.findElement(By.tagName('button')).click();
-		driver.wait(until.elementLocated(By.css('nav[role="navigation"]')), 15000);
-
-		openTag(getTag());
-
+		driver.wait(until.elementLocated(By.css('nav[role="navigation"]')), 15000).then(function(){
+			openTag(getTag());
+		});
 	});
 	
 
 	function openTag(tag){
 		driver.get('https://instagram.com/explore/tags/' + tag + '/');
-		driver.wait(until.elementLocated(By.css('nav[role="navigation"]')), 15000);
-		driver.findElements(By.className(classNames.photoPreview)).then(function(elements_arr){ 
-			var i = 10;
-			function recurCall(){
-				openModalAndClick(elements_arr[i], function(){
-					i++;
-					if (i === 15){
-						openTag(getTag());
-					} else {
-						recurCall();
-					}
-				})
-			}
-			recurCall();
+		driver.wait(until.elementLocated(By.css('nav[role="navigation"]')), 15000).then(function(){
+			driver.findElements(By.className(classNames.photoPreview)).then(function(elements_arr){ 
+				var i = 10;
+				function recurCall(){
+					openModalAndClick(elements_arr[i], function(){
+						i++;
+						if (i === 15){
+							openTag(getTag());
+						} else {
+							recurCall();
+						}
+					})
+				}
+				recurCall();
+			});
 		});
 	}
 
 	function openModalAndClick(element, cb){
 		element.click();
-	   	driver.wait(until.elementLocated(By.className(classNames.heart)), 15000);
-//   	if (Math.random() > 0.5) driver.findElement(By.className('-cx-PRIVATE-FollowButton__buttonEnabled')).click();
-		
-	   	driver.findElement(By.className(classNames.heart)).click().then(function(){
-	   		setTimeout(function(){
-	   			driver.findElement(By.className(classNames.closeModal)).click().then(function(){
-			   		console.log('liked something' + login.driver);
-			   		setTimeout(cb, randomTime());
+	   	driver.wait(until.elementLocated(By.className(classNames.heart)), 10000).then(function(){
+	   		driver.findElement(By.className(classNames.heart)).click().then(function(){
+			   		setTimeout(function(){
+			   			driver.findElement(By.className(classNames.closeModal)).click().then(function(){
+					   		counter++;
+					   		console.log(counter + ':liked something on ' + login.driver);
+					   		setTimeout(cb, randomTime());
+					   	});
+			   		}, Math.random() * randomTime())
 			   	});
-	   		}, Math.random() * randomTime())
+	   	}, function(){
+	   		console.log('does not exist');
+			cb();
 	   	});
-	   	
+//   	if (Math.random() > 0.5) driver.findElement(By.className('-cx-PRIVATE-FollowButton__buttonEnabled')).click();
 	}
 
 	//We have this because instagram has a limt of likes per hour and/or to mitigate the chance of being banned
@@ -78,7 +83,6 @@ function startTask(config, classNames){
 
 try{
 	var configs = require('./config');
-	console.log(configs);
 
 	configs.users.forEach(function(config){
 		startTask(config, configs.classNames)
