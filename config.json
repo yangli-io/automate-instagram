@@ -1,8 +1,15 @@
-[
-	{
-		"user": "",
-		"pass": "",
-		"tags": ["food", "sydneyfoodies", "sydneyeats", "dinnertime","eat"],
-		"driver": "firefox"
+{
+	"users": [
+		{
+			"user": "michiellaneousfoods",
+			"pass": "",
+			"tags": ["food", "sydneyfoodies", "sydneyeats", "dinnertime","eat"],
+			"driver": "firefox"
+		}
+	],
+	"classNames": {
+		"photoPreview": "_ovg3g",
+		"heart": "coreSpriteHeartOpen",
+		"closeModal": "_3eajp"
 	}
-]
+}
